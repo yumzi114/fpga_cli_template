@@ -11,6 +11,7 @@ proc build {} {
     create_project -force blink [file join $out project] -part xc7a100tfgg676-1
     set_property target_language Verilog [current_project]
     add_files [file join $root rtl blink.v]
+    add_files [file join $root rtl blink_counter.sv]
     add_files -fileset constrs_1 [file join $root constraints blink.xdc]
     set_property top blink [current_fileset]
     create_ip -name clk_wiz -vendor xilinx.com -library ip -version 6.0 -module_name clk_wiz_0
