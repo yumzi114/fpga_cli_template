@@ -116,3 +116,27 @@ sim-pipeline4:
 
 wave-pipeline4:
 	surfer build/sim_pipeline4/pipeline4.vcd
+# ==========================================
+# GPIO Pipeline Build
+# ==========================================
+
+.PHONY: build-gpio program-gpio run-gpio
+
+build-gpio:
+	mkdir -p build
+	cd build && "$(VIVADO)" -mode batch -notrace \
+		-source "$(ROOT)/scripts/build_gpio.tcl" \
+		-log build_gpio.log \
+		-journal build_gpio.jou
+
+# Program FPGA SRAM
+program-gpio:
+	@test -f build/pipeline_gpio.bit || { echo 'Run make build-gpio first.'; exit 1; }
+	openFPGALoader \
+		-c $(JTAG_CABLE) \
+		--fpga-part $(FPGA_PART) \
+		build/pipeline_gpio.bit
+
+# Build + Program
+run-gpio: build-gpio
+	$(MAKE) program-gpio
